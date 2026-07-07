@@ -1,0 +1,117 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.logo-title {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 300;
+    margin-bottom: 25px;
+    color: #111111;
+}
+
+/* 2x2 Grid Layout */
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+/* Button Base Styles */
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 30px 15px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+/* Specific Colors matching your layout UI */
+.btn-teal { background-color: #a7dbdb; color: #ffffff; text-shadow: 0px 1px 2px rgba(0,0,0,0.1); }
+.btn-navy { background-color: #1e355b; }
+.btn-blue { background-color: #46799b; }
+.btn-red  { background-color: #e34247; }
+
+/* Contacts Container Box */
+.contacts-box {
+    border: 1px solid #111111;
+    border-radius: 16px;
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.contacts-title {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 20px;
+    color: #222;
+}
+
+/* Contact Cards */
+.contact-card {
+    background-color: #f2f9f4;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+}
+
+.contact-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333333;
+    margin-bottom: 2px;
+}
+
+.contact-phone {
+    font-size: 0.9rem;
+    color: #666666;
+}
+
+/* Add More Button */
+.btn-add {
+    width: 100%;
+    background-color: #46799b;
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.btn-add:active {
+    background-color: #3b6683;
+}

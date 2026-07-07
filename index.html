@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickChat</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="logo-title">QuickChat</h1>
+
+        <div class="grid-container">
+            <button class="btn btn-teal" onclick="sendAlert('reach_office')">I reach at office</button>
+            <button class="btn btn-navy" onclick="sendAlert('left_office')">I left from office</button>
+            <button class="btn btn-blue" onclick="sendAlert('custom')">Custom</button>
+            <button class="btn btn-red" onclick="sendAlert('call_urgent')">Call me argent</button>
+        </div>
+
+        <div class="contacts-box">
+            <h3 class="contacts-title">Your contact's</h3>
+            
+            <div class="contact-card">
+                <p class="contact-name">Mom</p>
+                <p class="contact-phone">+91 9699717124</p>
+            </div>
+
+            <div class="contact-card">
+                <p class="contact-name">Dad</p>
+                <p class="contact-phone">+91 9011594545</p>
+            </div>
+
+            <button class="btn-add">Add more</button>
+        </div>
+    </div>
+
+    <script>
+        function sendAlert(alertType) {
+            fetch('/send-sms', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: alertType })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert("Alert sent successfully via Twilio!");
+                } else {
+                    alert("Error dispatching alert: " + data.error);
+                }
+            })
+            .catch(err => console.error("Error:", err));
+        }
+    </script>
+</body>
+</html>
