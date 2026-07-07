@@ -1,33 +1,41 @@
 import os
 from twilio.rest import Client
 
-# Yeh lines ab system/Render ke Environment Variables se keys uthayengi
+# Environment Variables
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
 MESSAGING_SERVICE_SID = os.environ.get("MESSAGING_SERVICE_SID")
 
-def send_sms_alert(contact_name, phone_number, message_text):
+def dispatch_to_all(contacts, message_text):
     """
-    Sends an actual live text message via your Twilio Messaging Service.
+    Loops through all verified contacts and dispatches the live payload via Twilio.
     """
-    try:
-        # Check configuration safety
-        if not TWILIO_ACCOUNT_SID or not TWILIO_AUTH_TOKEN:
-            return {"success": False, "error": "Twilio credentials missing in Environment Variables"}
-
-        # Initialize the live Twilio API client connection
-        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+    if not TWILIO_ACCOUNT_SID or not TWILIO_AUTH_TOKEN:
+        return {"success": False, "error": "Twilio credentials missing in Render Env"}
         
-        # Dispatch the message
-        message = client.messages.create(
-            messaging_service_sid=MESSAGING_SERVICE_SID,
-            body=f"Alert from Parth: {message_text}",
-            to=phone_number
-        )
-        
-        print(f" Live SMS sent to {contact_name}")
-        return {"success": True, "sid": message.sid}
+    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+    success_count = 0
+    errors = []
 
-    except Exception as e:
-        print(f"❌ Error sending to {contact_name}: {str(e)}")
-        return {"success": False, "error": str(e)}
+    # Contacts list par iterate karein
+    for contact in contacts:
+        name = contact.get("name", "Unknown")
+        phone = contact.get("phone")
+        
+        if not phone:
+            continue
+            
+        try:
+            message = client.messages.create(
+                messaging_service_sid=MESSAGING_SERVICE_SID,
+                body=f"Alert from Parth: {message_text}",
+                to=phone
+            )
+            success_count += 1
+        except Exception as e:
+            errors.append(f"Error sending to {name}: {str(e)}")
+
+    if success_count > 0:
+        return {"success": True, "message": f"Successfully sent to {success_count} contacts.", "errors": errors}
+    else:
+        return {"success": False, "error": "Failed to send to any contact.", "details": errors}
