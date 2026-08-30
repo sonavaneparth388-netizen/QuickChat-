@@ -14,12 +14,24 @@ def home():
         return render_template('templates/index.html')
     return render_template('index.html')
 
+def load_contacts_data():
+    contacts_env = os.environ.get("CONTACTS_JSON")
+    if contacts_env:
+        try:
+            return json.loads(contacts_env)
+        except Exception as e:
+            print("Error parsing CONTACTS_JSON env:", e)
+    if os.path.exists('contacts.json'):
+        try:
+            with open('contacts.json', 'r') as file:
+                return json.load(file)
+        except Exception:
+            pass
+    return []
+
 @app.route('/contacts.json')
 def get_contacts():
-    if os.path.exists('contacts.json'):
-        with open('contacts.json', 'r') as file:
-            return jsonify(json.load(file))
-    return jsonify([])
+    return jsonify(load_contacts_data())
 
 @app.route('/send-sms', methods=['POST'])
 def send_sms():
@@ -32,12 +44,8 @@ def send_sms():
             return jsonify({"success": False, "error": "No action or message provided"}), 400
         
         message_text = get_message(action, custom_msg)
+        contacts = load_contacts_data()
         
-        contacts = []
-        if os.path.exists('contacts.json'):
-            with open('contacts.json', 'r') as file:
-                contacts = json.load(file)
-            
         dispatch_result = dispatch_to_all(contacts, message_text)
         return jsonify(dispatch_result)
 
