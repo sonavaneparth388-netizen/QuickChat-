@@ -1,14 +1,25 @@
-# Predefined QuickChat alert messages mapped directly to your new UI buttons
+# Predefined QuickChat alert messages mapped directly to UI buttons
 ALERT_MESSAGES = {
-    "reach_office": "I have reached the office safely.",
-    "left_office": "I have left from the office and am on my way.",
-    "custom": "Quick update: Please check your phone or chat.",
-    "call_urgent": "Call me urgently! It's important."
+    "reach_college": "Reached at college",
+    "reach_office": "Reached at office",
+    "left_college": "Left from college",
+    "left_office": "Left from office",
+    "call_urgent": "Call me urgent"
 }
 
-def get_message(alert_type):
+def get_message(alert_type, custom_message=None):
     """
-    Retrieves the text message for a given alert type.
-    Defaults to a generic alert if the key doesn't match perfectly.
+    Retrieves the formatted text message for a given alert type or custom message.
     """
-    return ALERT_MESSAGES.get(alert_type, "QuickChat Alert: Please check your messages.")
+    if custom_message and custom_message.strip():
+        return custom_message.strip()
+    
+    if alert_type in ALERT_MESSAGES:
+        return ALERT_MESSAGES[alert_type]
+    
+    # If action is not a preset key (e.g. user passed custom text directly as action)
+    if alert_type and alert_type != "custom":
+        return alert_type.strip()
+        
+    return "Call me urgent"
+

@@ -14,18 +14,29 @@ def home():
         return render_template('templates/index.html')
     return render_template('index.html')
 
+@app.route('/contacts.json')
+def get_contacts():
+    if os.path.exists('contacts.json'):
+        with open('contacts.json', 'r') as file:
+            return jsonify(json.load(file))
+    return jsonify([])
+
 @app.route('/send-sms', methods=['POST'])
 def send_sms():
     try:
-        data = request.get_json()
-        if not data or 'action' not in data:
-            return jsonify({"success": False, "error": "No action provided"}), 400
+        data = request.get_json() or {}
+        action = data.get('action')
+        custom_msg = data.get('custom_message') or data.get('alert_type')
+
+        if not action and not custom_msg:
+            return jsonify({"success": False, "error": "No action or message provided"}), 400
         
-        action = data['action']
-        message_text = get_message(action)
+        message_text = get_message(action, custom_msg)
         
-        with open('contacts.json', 'r') as file:
-            contacts = json.load(file)
+        contacts = []
+        if os.path.exists('contacts.json'):
+            with open('contacts.json', 'r') as file:
+                contacts = json.load(file)
             
         dispatch_result = dispatch_to_all(contacts, message_text)
         return jsonify(dispatch_result)
